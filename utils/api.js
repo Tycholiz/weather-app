@@ -1,4 +1,18 @@
-export const fetchLocationId = async city => {
+/*
+  WOEID, or Where On Earth ID, is a location identifier that allows us find details about a
+  specific location. This is from the MetaWeather API
+*/
+
+/*
+  This API provides:
+  1. Location search ( /api/location/search/ ) which allows us to search for a particular city
+  2. Location weather information ( /api/location/{woeid} ) which provides a 5 day forecast for a
+  certain location
+  3. Location day which provides ( /api/location/{woeid}/{date}/ ) forecast history and informa-
+  tion for a particular day and location
+*/
+
+export const fetchLocationId = async city => { //async functions are built on top of Promises, and they allow us to define asynchronous methods in a synchronous manner
   const response = await fetch(
     `https://www.metaweather.com/api/location/search/?query=${city}`,
   );
