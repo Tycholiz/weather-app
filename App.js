@@ -1,8 +1,8 @@
 import React from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
+import {
+  StyleSheet,
+  Text,
+  View,
   Platform,
   KeyboardAvoidingView,
   ImageBackground,
@@ -11,13 +11,13 @@ import {
 } from 'react-native';
 
 import { fetchLocationId, fetchWeather } from './utils/api' //methods to interact with Weather API
-import getImageForWeather from './utils/getImageForWeather.'
+import getImageForWeather from './utils/getImageForWeather'
 
 import SearchInput from './components/SearchInput';
 
 export default class App extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       error: false, //used to store the error message, should there be one
       loading: false,
@@ -35,12 +35,10 @@ export default class App extends React.Component {
 
   handleUpdateLocation = city => { //asynchronous action to fetch weather data for a city happens here. Therefore it makes sense to call this method when our component first loads
     if (!city) return;
-    this.setState({ loading: true }, async () => { //this 'async' is a callback that will fire after the state is updated. the cb allows updates to our state to happen asynchronously
+    this.setState({ loading: true }, async () => { //this asynchronous function is a callback that will fire after the state is updated.  this cb allows updates to our state to happen asynchronously
       try {
         const locationId = await fetchLocationId(city); //we call fetchLocationId and pass the locationId to fetchWeather to return an object that contains the required information ( location , weather , and temperature )
-        const { location, weather, temperature } = await fetchWeather(
-          locationId,
-        );
+        const { location, weather, temperature } = await fetchWeather(locationId);
 
         this.setState({ //our state will be updated here only once the above fetch functions have been completed. if any of the calls error, then our catch statement will update the error property to true
           loading: false,
@@ -49,44 +47,46 @@ export default class App extends React.Component {
           weather,
           temperature,
         });
+        console.log(this.state)
       } catch (e) {
         this.setState({
           loading: false,
           error: true,
         });
       }
-    });  
+    });
   };
 
 
   render() {
     const { loading, error, location, weather, temperature  } = this.state;
     return (
-      <KeyboardAvoidingView 
-        style={styles.container} 
-        behavior="padding">
-        <StatusBar 
-          barStyle="light-content" //changes color of status bar (iOS). we can configure Androoid statusbar in app.json
-        /> 
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior="padding"
+      >
+        <StatusBar
+          barStyle="light-content" //changes color of status bar
+        />
         <ImageBackground
-          source={getImageForWeather(weather)} //display appropriate image according to weather conditions
+          source={getImageForWeather(weather)}
           style={styles.imageContainer}
           imageStyle={styles.image}
         >
           <View style={styles.detailsContainer}>
-            <ActivityIndicator 
-              animating={loading} //this prop is responsible for whether or not the indicator component shows 
-              color='white' 
+            <ActivityIndicator
+              animating={loading} //this prop is responsible for whether or not the indicator component shows
+              color='white'
               size='large'
             />
-            {!loading && ( //render this if loading is false
+            {!loading && (
               <View>
-                {error && ( //render this if there is an error
+                {error && (
                   <Text style={[styles.smallText, styles.textStyle]}>
                     Could not load weather. Please try a different city.
                   </Text>
                 )}
-                {!error && ( //render this if there is no error
+                {!error && (
                   <View>
                     <Text style={[styles.largeText, styles.textStyle]}>
                       {location} {/* the reason we pass in this prop is because we need a way for our child component to modify that field and communicate back up to our container App component*/}
@@ -95,13 +95,11 @@ export default class App extends React.Component {
                       {weather}
                     </Text>
                     <Text style={[styles.largeText, styles.textStyle]}>
-                      {`${Math.round(temperature)}°`} 
+                      {`${Math.round(temperature)}°`}
                     </Text>
                   </View>
                 )}
-            )}
-
-                <SearchInput 
+                <SearchInput
                   placeholder="Search any city" //this prop gets passed down to the child component
                   onSubmit={this.handleUpdateLocation} //here, the SearchInput comp. is communicating with the parent whenever the user submits the input field. We do this because we want our parent component to handle the event of the user typing and submitting a new city
                 />

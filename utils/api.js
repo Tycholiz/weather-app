@@ -13,17 +13,13 @@
 */
 
 export const fetchLocationId = async city => { //async functions are built on top of Promises, and they allow us to define asynchronous methods in a synchronous manner
-  const response = await fetch(
-    `https://www.metaweather.com/api/location/search/?query=${city}`,
-  );
-  const locations = await response.json();
+  const response = await fetch(`https://www.metaweather.com/api/location/search/?query=${city}`);
+  const locations = await response.json(); //why do we need to 'await' if all we are doing is converting too json? does 'await' imply asynchrony?
   return locations[0].woeid;
 };
 
 export const fetchWeather = async woeid => {
-  const response = await fetch(
-    `https://www.metaweather.com/api/location/${woeid}/`,
-  );
+  const response = await fetch(`https://www.metaweather.com/api/location/${woeid}/`);
   const { title, consolidated_weather } = await response.json();
   const { weather_state_name, the_temp } = consolidated_weather[0];
 
